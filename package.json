@@ -1,0 +1,22 @@
+{
+  "name": "commute-contour-dm-cacher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/maps": "^0.4.5",
+    "@types/googlemaps": "^3.30.7",
+    "@types/lodash": "^4.14.104",
+    "lodash": "^4.17.5"
+  },
+  "devDependencies": {
+    "@types/node": "^9.4.6",
+    "typescript": "^2.7.2"
+  }
+}
