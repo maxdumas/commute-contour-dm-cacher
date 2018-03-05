@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "webpack && (cd dist && zip -r9 ../latest.zip ./*)",
     "test": "test"
   },
   "author": "",
@@ -17,6 +17,9 @@
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
-    "typescript": "^2.7.2"
+    "ts-loader": "^4.0.1",
+    "typescript": "^2.7.2",
+    "webpack": "^4.1.0",
+    "webpack-cli": "^2.0.10"
   }
 }
