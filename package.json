@@ -4,22 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack && (cd dist && zip -r9 ../latest.zip ./*)",
-    "test": "test"
+    "release": "run-s test build clean-dist package publish",
+    "test": "echo 'test'",
+    "build": "webpack",
+    "clean-dist": "rm -rf dist && mkdir dist",
+    "package": "cd build && zip -r9 ../dist/latest.zip ./*",
+    "publish": "aws lambda update-function-code --function-name CommuteContourDMCacher --zip-file fileb://./dist/latest.zip"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google/maps": "^0.4.5",
-    "lodash": "^4.17.5"
+    "aws-sdk": "^2.205.0",
+    "lodash": "^4.17.5",
+    "uid-safe": "^2.1.5"
   },
   "devDependencies": {
     "@types/googlemaps": "^3.30.7",
     "@types/lodash": "^4.14.104",
     "@types/node": "^9.4.6",
-    "ts-loader": "^4.0.1",
-    "typescript": "^2.7.2",
-    "webpack": "^4.1.0",
-    "webpack-cli": "^2.0.10"
+    "npm-run-all": "^4.1.2",
+    "ts-loader": "^4.2.0",
+    "typescript": "^2.8.1",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
   }
 }
