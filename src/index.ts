@@ -53,15 +53,8 @@ export const handler = async (event: any, context: any, callback: (err?: Error, 
 			TableName: 'DMCache',
 		};
 
-		const response: AWS.DynamoDB.PutItemOutput = await new Promise((resolve, reject) => {
-			dynamodb.putItem(dbParams, (err, data) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(data);
-				}
-			});
-		});
+		const response: AWS.DynamoDB.PutItemOutput = await dynamodb.putItem(dbParams).promise();
+
 		const writeCount = response!.ConsumedCapacity!.CapacityUnits;
 	    callback(undefined, `Wrote ${writeCount} for query ending ${new Date()}`);
 	} catch (err) {
