@@ -24,18 +24,19 @@ const provisionHandler = () => Promise.resolve({
 	}),
 });
 
-export const handler = (event: any, context: any, callback: (err?: Error, messsage?: any) => never) => {
-	const dynamodb = new AWS.DynamoDB();
+export const handler = async (event: any, context: any, callback: (err?: Error, messsage?: any) => never) => {
+	try {
+		const dynamodb = new AWS.DynamoDB();
 
-	provisionHandler().then(({ client }) =>
-		getDistanceMatrix(client, {
+		const client = await provisionHandler();
+		const results = await getDistanceMatrix(client, {
 			origin,
 			latitudeSampleCount,
 			latitudeSampleRange,
 			longitudeSampleCount,
 			longitudeSampleRange,
-		})
-	).then(results => {
+		});
+
 		const dbParams = {
 			Item: {
 				id: { S: `${origin[0]}_${origin[1]}` },
@@ -52,7 +53,7 @@ export const handler = (event: any, context: any, callback: (err?: Error, messsa
 			TableName: 'DMCache',
 		};
 
-		return new Promise((resolve, reject) => {
+		const response: AWS.DynamoDB.PutItemOutput = await new Promise((resolve, reject) => {
 			dynamodb.putItem(dbParams, (err, data) => {
 				if (err) {
 					reject(err);
@@ -61,10 +62,9 @@ export const handler = (event: any, context: any, callback: (err?: Error, messsa
 				}
 			});
 		});
-	}).then((response: AWS.DynamoDB.PutItemOutput) => {
 		const writeCount = response!.ConsumedCapacity!.CapacityUnits;
 	    callback(undefined, `Wrote ${writeCount} for query ending ${new Date()}`);
-	}).catch(err => {
+	} catch (err) {
 		callback(err);
-	});
+	}
 };
