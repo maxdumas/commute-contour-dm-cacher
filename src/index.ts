@@ -1,4 +1,7 @@
+import AWS from 'aws-sdk';
 import maps from '@google/maps';
+import uid from 'uid-safe';
+AWS.config.update({ region: 'us-east-1' });
 
 import { Point } from './util';
 import { getDistanceMatrix } from './get-dm';
@@ -14,6 +17,7 @@ const latitudeSampleRange = 0.15;
 const longitudeSampleCount = 50;
 const longitudeSampleRange = 0.125;
 
+
 const provisionHandler = () => Promise.resolve({
 	client: maps.createClient({
 		key: process.env['GOOGLE_API_KEY']!,
@@ -21,6 +25,8 @@ const provisionHandler = () => Promise.resolve({
 });
 
 export const handler = (event: any, context: any, callback: (err?: Error, messsage?: any) => never) => {
+	const dynamodb = new AWS.DynamoDB();
+
 	provisionHandler().then(({ client }) =>
 		getDistanceMatrix(client, {
 			origin,
@@ -30,15 +36,34 @@ export const handler = (event: any, context: any, callback: (err?: Error, messsa
 			longitudeSampleRange,
 		})
 	).then(results => {
-		const finalOutput = {
-			origin: { lat: origin[0], lng: origin[1] },
-			latitudeSampleCount,
-			latitudeSampleRange,
-			longitudeSampleCount,
-			longitudeSampleRange,
-			results,
+		const dbParams = {
+			Item: {
+				id: { S: `${origin[0]}_${origin[1]}` },
+				originLatitude: { N: '' + origin[0] },
+				originLongitude: { N: '' + origin[1] },
+				latitudeSampleCount: { N: '' + latitudeSampleCount },
+				latitudeSampleRange: { N: '' + latitudeSampleRange },
+				longitudeSampleCount: { N: '' + longitudeSampleCount },
+				longitudeSampleRange: { N: '' + longitudeSampleRange },
+				results: { S: JSON.stringify(results) },
+				queryDate: { N: '' + Date.now() },
+			},
+			ReturnConsumedCapacity: 'TOTAL',
+			TableName: 'DMCache',
 		};
-	    callback(undefined, `Wrote ${results.length} for query ending ${new Date()}`);
+
+		return new Promise((resolve, reject) => {
+			dynamodb.putItem(dbParams, (err, data) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(data);
+				}
+			});
+		});
+	}).then((response: AWS.DynamoDB.PutItemOutput) => {
+		const writeCount = response!.ConsumedCapacity!.CapacityUnits;
+	    callback(undefined, `Wrote ${writeCount} for query ending ${new Date()}`);
 	}).catch(err => {
 		callback(err);
 	});
