@@ -1,7 +1,6 @@
 import AWS from 'aws-sdk';
 import maps from '@google/maps';
 import uid from 'uid-safe';
-AWS.config.update({ region: 'us-east-1' });
 
 import { Point } from './util';
 import { getDistanceMatrix } from './get-dm';
@@ -17,18 +16,14 @@ const latitudeSampleRange = 0.15;
 const longitudeSampleCount = 50;
 const longitudeSampleRange = 0.125;
 
-
-const provisionHandler = () => Promise.resolve({
-	client: maps.createClient({
-		key: process.env['GOOGLE_API_KEY']!,
-	}),
-});
-
 export const handler = async (event: any, context: any, callback: (err?: Error, messsage?: any) => never) => {
 	try {
 		const dynamodb = new AWS.DynamoDB();
 
-		const client = await provisionHandler();
+		const client = maps.createClient({
+			key: process.env['GOOGLE_API_KEY']!,
+		});
+
 		const results = await getDistanceMatrix(client, {
 			origin,
 			latitudeSampleCount,
