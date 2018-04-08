@@ -11,6 +11,9 @@ phases:
   post_build:
     commands:
       - npm run package
+      - aws cloudformation package --template-file samTemplate.yml
+                                   --s3-bucket $S3_BUCKET
+                                   --output-template-file dist/template.yml
 
 artifacts:
   type: zip
@@ -18,3 +21,4 @@ artifacts:
   discard-paths: yes
   files:
     - latest.zip
+    - template.yml
