@@ -6,4 +6,4 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: nodejs8.10
-      CodeUri: ./latest.zip
+      CodeUri: ./dist/latest.zip

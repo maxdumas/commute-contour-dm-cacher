@@ -22,5 +22,4 @@ artifacts:
   base-directory: dist
   discard-paths: yes
   files:
-    - latest.zip
     - template.yml
