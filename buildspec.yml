@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - npm run test
+      - npm run build
+  post_build:
+    commands:
+      - npm run package
+
+artifacts:
+  type: zip
+  base-directory: dist
+  discard-paths: yes
+  files:
+    - latest.zip
