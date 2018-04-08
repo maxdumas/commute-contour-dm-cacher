@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "release": "run-s test build clean-dist package publish",
-    "test": "echo 'test'",
+    "test": "eslint src/**.ts",
     "build": "webpack",
     "clean-dist": "rm -rf dist && mkdir dist",
     "package": "cd build && zip -r9 ../dist/latest.zip ./*",
@@ -23,9 +23,11 @@
     "@types/googlemaps": "^3.30.7",
     "@types/lodash": "^4.14.104",
     "@types/node": "^9.4.6",
+    "eslint": "^4.19.1",
     "npm-run-all": "^4.1.2",
     "ts-loader": "^4.2.0",
     "typescript": "^2.8.1",
+    "typescript-eslint-parser": "^14.0.0",
     "webpack": "^4.5.0",
     "webpack-cli": "^2.0.14"
   }

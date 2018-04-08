@@ -8,7 +8,7 @@ const getUniformSamples = (center: number, r: number, n: number) => {
 };
 
 const f = (a: any[], b: any[]) => _.flatten(a.map(d => b.map(e => [d, e])));
-export function cartesian(a: any[], b?: any[], ...c: any[][]): any[][] { return (b ? cartesian(f(a, b), ...c) : a) };
+export function cartesian(a: any[], b?: any[], ...c: any[][]): any[][] { return (b ? cartesian(f(a, b), ...c) : a); }
 
 interface DistanceMatrixOptions {
 	origin: Point,

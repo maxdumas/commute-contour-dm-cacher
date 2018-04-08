@@ -1,6 +1,5 @@
 import AWS from 'aws-sdk';
 import maps from '@google/maps';
-import uid from 'uid-safe';
 
 import { Point } from './util';
 import { getDistanceMatrix } from './get-dm';
@@ -51,7 +50,7 @@ export const handler = async (event: any, context: any, callback: (err?: Error, 
 		const response: AWS.DynamoDB.PutItemOutput = await dynamodb.putItem(dbParams).promise();
 
 		const writeCount = response!.ConsumedCapacity!.CapacityUnits;
-	    callback(undefined, `Wrote ${writeCount} for query ending ${new Date()}`);
+		callback(undefined, `Wrote ${writeCount} for query ending ${new Date()}`);
 	} catch (err) {
 		callback(err);
 	}
